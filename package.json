@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/alexlabrioche/bloom/issues"
   },
-  "homepage": "https://github.com/alexlabrioche/bloom#readme"
+  "homepage": "https://github.com/alexlabrioche/bloom#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "client": "0.0.1",
+    "expres": "0.0.5",
+    "mongoose": "^5.4.23"
+  }
 }
