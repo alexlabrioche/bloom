@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
 // Import Routes
-const test = require("./routes/api/test");
+const deputy = require("./routes/api/deputy");
 
 const app = express();
 
@@ -23,9 +23,12 @@ mongoose
   .catch(error => console.info("@Server: error connecting Mongoose", error));
 
 // Use routes
-app.use("/api/test", test);
+app.use("/api/deputies", deputy);
+// app.use("/api/parties", test);
+// app.use("/api/groups", test);
+// app.use("/api/lawscategories", test);
 
 const port = process.env.PORT || 4000;
 
-// // Listen port
+// Listen port
 app.listen(port, () => console.info(`@Server: running on port ${port}`));
