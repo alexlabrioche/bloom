@@ -10,15 +10,13 @@ const DeputySchema = new Schema({
   participationRate: {
     type: Number
   },
-  mandate: {
-    from: {
-      type: Date,
-      required: true
-    },
-    to: {
-      type: Date,
-      required: true
-    }
+  mandateFrom: {
+    type: Date,
+    required: true
+  },
+  mandateTo: {
+    type: Date,
+    required: true
   },
   group: {
     type: Schema.Types.ObjectId,
