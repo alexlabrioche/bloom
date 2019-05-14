@@ -7,80 +7,80 @@ const mongoose = require("mongoose");
 const slug = require("slug");
 slug.defaults.mode = "rfc3986";
 
-// Party Model
-const Party = require("../../models/Party");
+// Group Model
+const Group = require("../../models/Group");
 
-// @route   GET api/parties/test
+// @route   GET api/groups/test
 // @desc    Tests post route
 // @access  Public
 router.get("/test", (req, res) =>
   res.json({
-    message: "parties route works"
+    message: "groups route works"
   })
 );
 
-// @route   GET api/parties
-// @desc    Get all parties
+// @route   GET api/groups
+// @desc    Get all groups
 // @access  Public
 router.get("/", (req, res) => {
-  Party.find()
-    .then(party => res.json(party))
+  Group.find()
+    .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        nopartiesfound: "No parties found"
+        nogroupsfound: "No groups found"
       })
     );
 });
 
-// @route   GET api/parties/:id
+// @route   GET api/groups/:id
 // @desc    Get party by id
 // @access  Public
 router.get("/:id", (req, res) => {
-  Party.findById(req.params.id)
-    .then(party => res.json(party))
+  Group.findById(req.params.id)
+    .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        nopartyfound: "No party found with that ID"
+        nogroupfound: "No group found with that ID"
       })
     );
 });
 
-// @route   POST api/parties
-// @desc    Create party
+// @route   POST api/groups
+// @desc    Create group
 // @access  Private
 router.post("/", (req, res) => {
-  const newParty = new Party({
+  const newGroup = new Group({
     name: req.body.name,
     description: req.body.description,
     slug: slug(req.body.name.toString())
   });
 
-  newParty.save().then(party => res.json(party));
+  newGroup.save().then(group => res.json(group));
 });
 
-// @route   POST api/parties/:id
-// @desc    Update party
+// @route   POST api/groups/:id
+// @desc    Update group
 // @access  Private
 router.post("/:id", (req, res) => {
-  Party.findById(req.params.id).then(party => {
-    const partyFields = {};
-    if (req.body.name) partyFields.name = req.body.name;
-    if (req.body.description) partyFields.description = req.body.description;
-    partyFields.slug = slug(req.body.name.toString());
-    Party.findOneAndUpdate(
+  Group.findById(req.params.id).then(group => {
+    const groupFields = {};
+    if (req.body.name) groupFields.name = req.body.name;
+    if (req.body.description) groupFields.description = req.body.description;
+    groupFields.slug = slug(req.body.name.toString());
+    Group.findOneAndUpdate(
       { _id: req.params.id },
-      { $set: partyFields },
+      { $set: groupFields },
       { useFindAndModify: false }
-    ).then(party => res.json(party));
+    ).then(group => res.json(group));
   });
 });
 
-// @route   DELETE api/parties/:id
-// @desc    Delete party
+// @route   DELETE api/groups/:id
+// @desc    Delete group
 // @access  Private
 router.delete("/:id", (req, res) => {
-  Party.findById(req.params.id).then(party => {
-    party
+  Group.findById(req.params.id).then(group => {
+    group
       .remove()
       .then(() =>
         res.json({
@@ -89,7 +89,7 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          partynotfound: "No party found"
+          partynotfound: "No group found"
         })
       );
   });
