@@ -42,7 +42,7 @@ router.get("/:id", (req, res) => {
 // @route         POST api/deputies/add
 // @descrip       CREATE : Add a new deputy
 // @access        Restricted
-router.post("/add", upload.single("image"), (req, res) => {
+router.put("/add", upload.single("image"), (req, res) => {
   // // On rename la photo dans le upload
   // console.log("req.file", req.file);
   // var pictureName = "public/uploads/" + req.file + ".jpg";
@@ -120,7 +120,7 @@ router.post("/:id", (req, res) => {
         { _id: req.params.id },
         { $set: deputyFields },
         { useFindAndModify: false }
-      ).then(deputy => res.json(deputy)); // Ici le json retourné par postman ne renvoit pas le député modifié. Pourtant il est bien modifié.
+      ).then(deputy => res.json(deputy));
     });
 });
 
