@@ -39,7 +39,7 @@ router.get("/:id", (req, res) => {
     );
 });
 
-// @route         POST api/deputies/add
+// @route         PUT api/deputies/add
 // @descrip       CREATE : Add a new deputy
 // @access        Restricted
 router.put("/add", upload.single("image"), (req, res) => {
