@@ -11,12 +11,10 @@ const DeputySchema = new Schema({
     type: Number
   },
   mandateFrom: {
-    type: Date,
-    required: true
+    type: Date
   },
   mandateTo: {
-    type: Date,
-    required: true
+    type: Date
   },
   group: {
     type: Schema.Types.ObjectId,
@@ -27,8 +25,7 @@ const DeputySchema = new Schema({
     ref: "parties"
   },
   picture: {
-    type: String,
-    required: true
+    type: String
   },
   slug: {
     type: String
