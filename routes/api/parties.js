@@ -64,6 +64,7 @@ router.post("/", (req, res) => {
 router.post("/:id", (req, res) => {
   Party.findById(req.params.id).then(party => {
     const partyFields = {};
+
     if (req.body.name) partyFields.name = req.body.name;
     if (req.body.description) partyFields.description = req.body.description;
     partyFields.slug = slug(req.body.name.toString());

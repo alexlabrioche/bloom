@@ -33,7 +33,7 @@ router.get("/", (req, res) => {
 });
 
 // @route   GET api/groups/:id
-// @desc    Get party by id
+// @desc    Get group by id
 // @access  Public
 router.get("/:id", (req, res) => {
   Group.findById(req.params.id)
@@ -66,7 +66,7 @@ router.post("/:id", (req, res) => {
     const groupFields = {};
     if (req.body.name) groupFields.name = req.body.name;
     if (req.body.description) groupFields.description = req.body.description;
-    groupFields.slug = slug(req.body.name.toString());
+    if (req.body.slug) groupFields.slug = slug(req.body.name.toString());
     Group.findOneAndUpdate(
       { _id: req.params.id },
       { $set: groupFields },

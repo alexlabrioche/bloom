@@ -15,18 +15,18 @@ const LawSchema = new Schema({
     required: true
   },
   commencement: {
-    type: Date,
-    required: true
+    type: Date
   },
   resume: {
-    type: String,
-    max: 300
+    type: String
   },
   fullText: {
-    type: String,
-    max: 600
+    type: String
   },
   link: {
+    type: String
+  },
+  slug: {
     type: String
   },
   created: {
