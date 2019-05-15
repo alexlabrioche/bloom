@@ -6,6 +6,10 @@ const bodyParser = require("body-parser");
 // Import Routes
 const deputies = require("./routes/api/deputies");
 const parties = require("./routes/api/parties");
+const groups = require("./routes/api/groups");
+const lawsCategories = require("./routes/api/laws-categories");
+const laws = require("./routes/api/laws");
+const votes = require("./routes/api/votes");
 
 const app = express();
 
@@ -26,8 +30,10 @@ mongoose
 // Use routes
 app.use("/api/deputies", deputies);
 app.use("/api/parties", parties);
-// app.use("/api/groups", test);
-// app.use("/api/lawscategories", test);
+app.use("/api/groups", groups);
+app.use("/api/laws-categories", lawsCategories);
+app.use("/api/laws", laws);
+app.use("/api/votes", votes);
 
 const port = process.env.PORT || 4000;
 
