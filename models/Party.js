@@ -5,11 +5,11 @@ const Schema = mongoose.Schema;
 const PartySchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    index: true
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   picture: {
     type: String
