@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const deputies = require("./routes/api/deputies");
 const parties = require("./routes/api/parties");
 const groups = require("./routes/api/groups");
-const lawsCategories = require("./routes/api/laws-categories");
+const lawsCategories = require("./routes/api/lawsCategories");
 const laws = require("./routes/api/laws");
 const votes = require("./routes/api/votes");
 
