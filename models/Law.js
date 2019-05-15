@@ -5,14 +5,16 @@ const Schema = mongoose.Schema;
 const LawSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
+    index: true
   },
   subTitle: {
     type: String
   },
   protect: {
     type: Boolean,
-    required: true
+    required: true,
+    index: true
   },
   commencement: {
     type: Date

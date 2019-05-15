@@ -16,6 +16,10 @@ const VoteSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "laws",
     index: true
+  },
+  created: {
+    type: Date,
+    default: Date.now
   }
 });
 
