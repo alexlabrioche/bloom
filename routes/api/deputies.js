@@ -74,8 +74,8 @@ router.post("/add", upload.single("image"), (req, res) => {
           group: req.body.group,
           party: req.body.party,
           picture: req.body.picture,
-          slug: slug(req.body.name.toString()),
-          images: "/uploads/" + req.file.filename + ".jpg"
+          slug: slug(req.body.name.toString())
+          // images: "/uploads/" + req.file.filename + ".jpg"
         });
         newDeputy
           .save()
