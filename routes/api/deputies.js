@@ -33,16 +33,20 @@ router.get("/", (req, res) => {
 // @access    Public
 router.get("/:id", (req, res) => {
   Deputy.findById(req.params.id)
+    .populate("groups", ["name", "description", "picture", "slug", "created"])
+    .populate("parties", ["name", "description", "picture", "slug", "created"])
     .then(deputy => res.json(deputy))
     .catch(err =>
-      res.status(400).json({ noDeputyFound: "no deputy found with that id" })
+      res
+        .status(400)
+        .json({ noDeputyFound: "Il n'y a pas de député avec cet ID" })
     );
 });
 
-// @route         PUT api/deputies/add
+// @route         POST api/deputies/add
 // @descrip       CREATE : Add a new deputy
 // @access        Restricted
-router.put("/add", upload.single("image"), (req, res) => {
+router.post("/add", upload.single("image"), (req, res) => {
   // // On rename la photo dans le upload
   // console.log("req.file", req.file);
   // var pictureName = "public/uploads/" + req.file + ".jpg";
@@ -87,41 +91,38 @@ router.put("/add", upload.single("image"), (req, res) => {
 // @descrip       UPDATE : Update a deputy
 // @access        Restricted
 router.post("/:id", (req, res) => {
-  Deputy.findById(req.params.id)
-    .populate("groups", ["name", "description", "picture", "slug", "created"])
-    .populate("parties", ["name", "description", "picture", "slug", "created"])
-    .then(deputy => {
-      const deputyFields = {};
+  Deputy.findById(req.params.id).then(deputy => {
+    const deputyFields = {};
 
-      if (req.body.name) {
-        deputyFields.name = req.body.name;
-      }
-      if (req.body.participationRate) {
-        deputyFields.participationRate = req.body.participationRate;
-      }
-      if (req.body.mandateFrom) {
-        deputyFields.mandateFrom = req.body.mandateFrom;
-      }
-      if (req.body.mandateTo) {
-        deputyFields.mandateTo = req.body.mandateTo;
-      }
-      if (req.body.group) {
-        deputyFields.group = req.body.group;
-      }
-      if (req.body.party) {
-        deputyFields.party = req.body.party;
-      }
-      if (req.body.picture) {
-        deputyFields.picture = req.body.picture;
-      }
+    if (req.body.name) {
+      deputyFields.name = req.body.name;
+    }
+    if (req.body.participationRate) {
+      deputyFields.participationRate = req.body.participationRate;
+    }
+    if (req.body.mandateFrom) {
+      deputyFields.mandateFrom = req.body.mandateFrom;
+    }
+    if (req.body.mandateTo) {
+      deputyFields.mandateTo = req.body.mandateTo;
+    }
+    if (req.body.group) {
+      deputyFields.group = req.body.group;
+    }
+    if (req.body.party) {
+      deputyFields.party = req.body.party;
+    }
+    if (req.body.picture) {
+      deputyFields.picture = req.body.picture;
+    }
 
-      deputyFields.slug = slug(req.body.name.toString());
-      Deputy.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: deputyFields },
-        { useFindAndModify: false }
-      ).then(deputy => res.json(deputy));
-    });
+    deputyFields.slug = slug(req.body.name.toString());
+    Deputy.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: deputyFields },
+      { useFindAndModify: false }
+    ).then(deputy => res.json(deputy));
+  });
 });
 
 // @route         DELETE api/deputies/:id
@@ -134,12 +135,12 @@ router.delete("/:id", (req, res) => {
       .then(() =>
         res.json({
           success: true,
-          successMessage: "This deputy has been deleted"
+          successMessage: "Le député a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
-          deputyNotFound: "No deputy found"
+          deputyNotFound: "Il n'y a pas de député à supprimer"
         })
       );
   });

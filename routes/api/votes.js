@@ -5,26 +5,39 @@ const mongoose = require("mongoose");
 // Vote Model
 const Vote = require("../../models/Vote");
 
-// @route   GET api/votes/test
-// @desc    Test route
-// @access  Public
-router.get("/test", (req, res) =>
-  res.json({
-    message: "vote route works"
-  })
-);
-
 // @route   GET api/votes/
 // @desc    Get all votes
 // @access  Public
 router.get("/", (req, res) => {
   Vote.find()
+    .populate("laws", [
+      "title",
+      "subTitle",
+      "protect",
+      "commencement",
+      "resume",
+      "fullText",
+      "link",
+      "slug",
+      "created"
+    ])
+    .populate("deputies", [
+      "name",
+      "participationRate",
+      "mandateFrom",
+      "mandateTo",
+      "group",
+      "party",
+      "picture",
+      "slug",
+      "created"
+    ])
     .then(vote => {
       res.json(vote);
     })
     .catch(err =>
       res.status(404).json({
-        votes: "there are no votes",
+        noVotesFound: "Il n'y a pas enocre de votes",
         error: err
       })
     );
@@ -35,10 +48,32 @@ router.get("/", (req, res) => {
 // @access  Public
 router.get("/:id", (req, res) => {
   Vote.findById(req.params.id)
+    .populate("laws", [
+      "title",
+      "subTitle",
+      "protect",
+      "commencement",
+      "resume",
+      "fullText",
+      "link",
+      "slug",
+      "created"
+    ])
+    .populate("deputies", [
+      "name",
+      "participationRate",
+      "mandateFrom",
+      "mandateTo",
+      "group",
+      "party",
+      "picture",
+      "slug",
+      "created"
+    ])
     .then(vote => res.json(vote))
     .catch(err =>
       res.status(404).json({
-        novotefound: "No vote found with that Id"
+        noVoteFound: "Il n'y a pas de vote avec cet ID"
       })
     );
 });
@@ -47,12 +82,18 @@ router.get("/:id", (req, res) => {
 // @desc    Create new vote
 // @access  Private
 router.put("/add", (req, res) => {
-  const newVote = new Vote({
-    decision: req.body.decision,
-    deputy: req.body.deputy,
-    law: req.body.law
+  Vote.findOne({ decision: req.body.desision }).then(vote => {
+    if (vote) {
+      return res.status(400).json({ decision: "Ce vote existe déjà" });
+    } else {
+      const newVote = new Vote({
+        decision: req.body.decision,
+        deputy: req.body.deputy,
+        law: req.body.law
+      });
+      newVote.save().then(vote => res.json(vote));
+    }
   });
-  newVote.save().then(vote => res.json(vote));
 });
 
 // @route   POST api/votes/:id
@@ -86,7 +127,7 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          votenotfound: "No vote found"
+          voteNotFound: "Le vote avec cette ID n'a pas été trouvée"
         })
       );
   });

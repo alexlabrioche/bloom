@@ -10,15 +10,6 @@ slug.defaults.mode = "rfc3986";
 // Group Model
 const Law = require("../../models/Law");
 
-// @route   GET api/groups/test
-// @desc    Tests post route
-// @access  Public
-router.get("/test", (req, res) =>
-  res.json({
-    message: "laws route works"
-  })
-);
-
 // @route   GET api/laws/
 // @desc    Get all laws
 // @access  Public
@@ -29,8 +20,7 @@ router.get("/", (req, res) => {
     })
     .catch(err =>
       res.status(404).json({
-        law: "there are no laws",
-        error: err
+        law: "Il n'y a pas encore de loi"
       })
     );
 });
@@ -43,26 +33,32 @@ router.get("/:id", (req, res) => {
     .then(law => res.json(law))
     .catch(err =>
       res.status(404).json({
-        nolawfound: "No law found with that Id"
+        noLawFound: "Il n'y a pas de loi avec cet ID"
       })
     );
 });
 
-// @route   PUT api/laws/add
+// @route   POST api/laws/add
 // @desc    Create new law
 // @access  Private
-router.put("/add", (req, res) => {
-  const newLaw = new Law({
-    title: req.body.title,
-    subTitle: req.body.subTitle,
-    protect: req.body.protect,
-    commencement: req.body.commencement,
-    resume: req.body.resume,
-    fullText: req.body.fullText,
-    link: req.body.link,
-    slug: slug(req.body.title.toString())
+router.post("/add", (req, res) => {
+  Law.findOne({ title: req.body.title }).then(law => {
+    if (law) {
+      return res.status(400).json({ law: "Cette loi existe déjà" });
+    } else {
+      const newLaw = new Law({
+        title: req.body.title,
+        subTitle: req.body.subTitle,
+        protect: req.body.protect,
+        commencement: req.body.commencement,
+        resume: req.body.resume,
+        fullText: req.body.fullText,
+        link: req.body.link,
+        slug: slug(req.body.title.toString())
+      });
+      newLaw.save().then(law => res.json(law));
+    }
   });
-  newLaw.save().then(law => res.json(law));
 });
 
 // @route   POST api/laws/:id
@@ -101,7 +97,7 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          lawnotfound: "No law found"
+          lawNotFound: "La loi avec cette ID n'a pas été trouvée"
         })
       );
   });

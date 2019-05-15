@@ -9,26 +9,28 @@ slug.defaults.mode = "rfc3986";
 // Law Category Model
 const LawCategory = require("../../models/LawCategory");
 
-// @route   GET api/laws-categories/test
-// @desc    Test route
-// @access  Public
-router.get("/test", (req, res) =>
-  res.json({
-    message: "LawCategory route works"
-  })
-);
-
 // @route   GET api/laws-categories/
 // @desc    Get all laws categories
 // @access  Public
 router.get("/", (req, res) => {
   LawCategory.find()
-    .then(laws => {
-      res.json(laws);
+    .populate("laws", [
+      "title",
+      "subTitle",
+      "protect",
+      "commencement",
+      "resume",
+      "fullText",
+      "link",
+      "slug",
+      "created"
+    ])
+    .then(categories => {
+      res.json(categories);
     })
     .catch(err =>
       res.status(404).json({
-        laws: "there are no laws Categories",
+        categories: "Il n'y a pas encore de catégories",
         error: err
       })
     );
@@ -39,25 +41,42 @@ router.get("/", (req, res) => {
 // @access  Public
 router.get("/:id", (req, res) => {
   LawCategory.findById(req.params.id)
-    .then(law => res.json(law))
+    .populate("laws", [
+      "title",
+      "subTitle",
+      "protect",
+      "commencement",
+      "resume",
+      "fullText",
+      "link",
+      "slug",
+      "created"
+    ])
+    .then(category => res.json(category))
     .catch(err =>
       res.status(404).json({
-        nolawfound: "No law category found with that Id"
+        noCategoryFound: "Il n'y a pas de catégorie de loi avec cet ID"
       })
     );
 });
 
-// @route   PUT api/laws-categories/add
+// @route   POST api/laws-categories/add
 // @desc    Create new law category
 // @access  Private
-router.put("/add", (req, res) => {
-  const newLawCategory = new LawCategory({
-    name: req.body.name,
-    description: req.body.description,
-    laws: req.body.laws,
-    slug: slug(req.body.name.toString())
+router.post("/add", (req, res) => {
+  LawCategory.findOne({ title: req.body.title }).then(category => {
+    if (category) {
+      return res.status(400).json({ name: "Cette catégorie existe déjà" });
+    } else {
+      const newLawCategory = new LawCategory({
+        name: req.body.name,
+        description: req.body.description,
+        laws: req.body.laws,
+        slug: slug(req.body.name.toString())
+      });
+      newLawCategory.save().then(law => res.json(law));
+    }
   });
-  newLawCategory.save().then(law => res.json(law));
 });
 
 // @route   POST api/laws-categories/:id
@@ -92,7 +111,8 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          lawnotfound: "No law category found"
+          categoryNotFound:
+            "La catégorie de loi avec cette ID n'a pas été trouvée"
         })
       );
   });

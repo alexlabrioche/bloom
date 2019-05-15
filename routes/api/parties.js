@@ -10,15 +10,6 @@ slug.defaults.mode = "rfc3986";
 // Party Model
 const Party = require("../../models/Party");
 
-// @route   GET api/parties/test
-// @desc    Tests post route
-// @access  Public
-router.get("/test", (req, res) =>
-  res.json({
-    message: "parties route works"
-  })
-);
-
 // @route   GET api/parties
 // @desc    Get all parties
 // @access  Public
@@ -27,7 +18,7 @@ router.get("/", (req, res) => {
     .then(party => res.json(party))
     .catch(err =>
       res.status(404).json({
-        nopartiesfound: "No parties found"
+        noPartiesFound: "Il n'y a pas encore de parti politique"
       })
     );
 });
@@ -40,7 +31,7 @@ router.get("/:id", (req, res) => {
     .then(party => res.json(party))
     .catch(err =>
       res.status(404).json({
-        nopartyfound: "No party found with that ID"
+        noPartyFound: "Il n'y a pas de parti politique avec cet ID"
       })
     );
 });
@@ -49,13 +40,19 @@ router.get("/:id", (req, res) => {
 // @desc    Create party
 // @access  Private
 router.post("/", (req, res) => {
-  const newParty = new Party({
-    name: req.body.name,
-    description: req.body.description,
-    slug: slug(req.body.name.toString())
-  });
+  Party.findOne({ name: req.body.name }).then(party => {
+    if (party) {
+      return res.status(400).json({ title: "Ce parti politique existe déjà" });
+    } else {
+      const newParty = new Party({
+        name: req.body.name,
+        description: req.body.description,
+        slug: slug(req.body.name.toString())
+      });
 
-  newParty.save().then(party => res.json(party));
+      newParty.save().then(party => res.json(party));
+    }
+  });
 });
 
 // @route   POST api/parties/:id
@@ -90,7 +87,7 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          partynotfound: "No party found"
+          partyNotFound: "Il n'y a pas de parti à supprimer"
         })
       );
   });

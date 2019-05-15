@@ -10,15 +10,6 @@ slug.defaults.mode = "rfc3986";
 // Group Model
 const Group = require("../../models/Group");
 
-// @route   GET api/groups/test
-// @desc    Tests post route
-// @access  Public
-router.get("/test", (req, res) =>
-  res.json({
-    message: "groups route works"
-  })
-);
-
 // @route   GET api/groups
 // @desc    Get all groups
 // @access  Public
@@ -27,7 +18,7 @@ router.get("/", (req, res) => {
     .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        nogroupsfound: "No groups found"
+        noGroupsFound: "Il n'y a pas encore de groupe politique"
       })
     );
 });
@@ -40,7 +31,7 @@ router.get("/:id", (req, res) => {
     .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        nogroupfound: "No group found with that ID"
+        noGroupFound: "Il n'y a pas de groupe politique avec cet ID"
       })
     );
 });
@@ -49,13 +40,19 @@ router.get("/:id", (req, res) => {
 // @desc    Create group
 // @access  Private
 router.post("/", (req, res) => {
-  const newGroup = new Group({
-    name: req.body.name,
-    description: req.body.description,
-    slug: slug(req.body.name.toString())
-  });
+  Group.findOne({ name: req.body.name }).then(group => {
+    if (group) {
+      return res.status(400).json({ title: "Ce groupe politique existe déjà" });
+    } else {
+      const newGroup = new Group({
+        name: req.body.name,
+        description: req.body.description,
+        slug: slug(req.body.name.toString())
+      });
 
-  newGroup.save().then(group => res.json(group));
+      newGroup.save().then(group => res.json(group));
+    }
+  });
 });
 
 // @route   POST api/groups/:id
@@ -89,7 +86,7 @@ router.delete("/:id", (req, res) => {
       )
       .catch(err =>
         res.status(404).json({
-          partynotfound: "No group found"
+          groupNotFound: "Il n'y a pas de groupe à supprimer"
         })
       );
   });
