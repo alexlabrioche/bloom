@@ -19,10 +19,16 @@
   "homepage": "https://github.com/alexlabrioche/bloom#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "express-session": "^1.16.1",
     "mongoose": "^5.4.23",
     "multer": "^1.4.1",
-    "slug": "^1.1.0"
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.1",
+    "slug": "^1.1.0",
+    "validator": "^10.11.0"
   }
 }

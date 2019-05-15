@@ -2,6 +2,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+var expressSession = require("express-session");
+var MongoStore = require("connect-mongo")(expressSession);
 
 // Import Routes
 const deputies = require("./routes/api/deputies");
@@ -10,8 +14,28 @@ const groups = require("./routes/api/groups");
 const lawsCategories = require("./routes/api/lawsCategories");
 const laws = require("./routes/api/laws");
 const votes = require("./routes/api/votes");
+const admin = require("./routes/api/admin");
 
 const app = express();
+
+// Enable session management
+app.use(
+  expressSession({
+    secret: "bloom2019",
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  })
+);
+
+// Enable Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport configuration
+passport.use(new LocalStrategy(Admin.authenticate()));
+passport.serializeUser(Admin.serializeUser()); // JSON.stringify
+passport.deserializeUser(Admin.deserializeUser()); // JSON.parse
 
 // Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,6 +58,7 @@ app.use("/api/groups", groups);
 app.use("/api/laws-categories", lawsCategories);
 app.use("/api/laws", laws);
 app.use("/api/votes", votes);
+app.use("/api/admin", admin);
 
 const port = process.env.PORT || 4000;
 
