@@ -19,8 +19,8 @@ const router = express.Router();
 // @access    Public
 router.get("/", (req, res) => {
   Deputy.find()
-    .populate("groups", ["name", "description", "picture", "slug", "created"])
-    .populate("parties", ["name", "description", "picture", "slug", "created"])
+    .populate("group", ["name", "description", "picture", "slug", "created"])
+    .populate("party", ["name", "description", "picture", "slug", "created"])
     .then(deputies => {
       res.json({
         deputies
@@ -33,8 +33,8 @@ router.get("/", (req, res) => {
 // @access    Public
 router.get("/:id", (req, res) => {
   Deputy.findById(req.params.id)
-    .populate("groups", ["name", "description", "picture", "slug", "created"])
-    .populate("parties", ["name", "description", "picture", "slug", "created"])
+    .populate("group", ["name", "description", "picture", "slug", "created"])
+    .populate("party", ["name", "description", "picture", "slug", "created"])
     .then(deputy => res.json(deputy))
     .catch(err =>
       res

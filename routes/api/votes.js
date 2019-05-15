@@ -10,7 +10,7 @@ const Vote = require("../../models/Vote");
 // @access  Public
 router.get("/", (req, res) => {
   Vote.find()
-    .populate("laws", [
+    .populate("law", [
       "title",
       "subTitle",
       "protect",
@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
       "slug",
       "created"
     ])
-    .populate("deputies", [
+    .populate("deputy", [
       "name",
       "participationRate",
       "mandateFrom",
@@ -48,7 +48,7 @@ router.get("/", (req, res) => {
 // @access  Public
 router.get("/:id", (req, res) => {
   Vote.findById(req.params.id)
-    .populate("laws", [
+    .populate("law", [
       "title",
       "subTitle",
       "protect",
@@ -59,7 +59,7 @@ router.get("/:id", (req, res) => {
       "slug",
       "created"
     ])
-    .populate("deputies", [
+    .populate("deputy", [
       "name",
       "participationRate",
       "mandateFrom",
@@ -78,10 +78,10 @@ router.get("/:id", (req, res) => {
     );
 });
 
-// @route   PUT api/votes/add
+// @route   POST api/votes/add
 // @desc    Create new vote
 // @access  Private
-router.put("/add", (req, res) => {
+router.post("/add", (req, res) => {
   Vote.findOne({ decision: req.body.desision }).then(vote => {
     if (vote) {
       return res.status(400).json({ decision: "Ce vote existe déjà" });

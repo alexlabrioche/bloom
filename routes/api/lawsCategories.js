@@ -64,7 +64,7 @@ router.get("/:id", (req, res) => {
 // @desc    Create new law category
 // @access  Private
 router.post("/add", (req, res) => {
-  LawCategory.findOne({ title: req.body.title }).then(category => {
+  LawCategory.findOne({ name: req.body.name }).then(category => {
     if (category) {
       return res.status(400).json({ name: "Cette catégorie existe déjà" });
     } else {
