@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const DeputySchema = new Schema({
   name: {
     type: String,
-    required: true,
     index: true
   },
   participationRate: {
