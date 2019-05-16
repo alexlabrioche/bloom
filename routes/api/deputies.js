@@ -46,7 +46,8 @@ router.get("/:id", (req, res) => {
 // @route         POST api/deputies/add
 // @descrip       CREATE : Add a new deputy
 // @access        Restricted
-router.post("/add", upload.single("image"), (req, res) => {
+// router.post("/add", upload.single("image"), (req, res) => {
+router.post("/add", (req, res) => {
   // // On rename la photo dans le upload
   // console.log("req.file", req.file);
   // var pictureName = "public/uploads/" + req.file + ".jpg";
@@ -58,6 +59,8 @@ router.post("/add", upload.single("image"), (req, res) => {
   //       .status(400)
   //       .json({ img: "L'image n'a pas pu être sauvegardée" });
   //   }
+
+  console.log(">> routes/deputies POST /add");
 
   Deputy.findOne({ name: req.body.name }).then(deputy => {
     if (deputy) {
@@ -84,8 +87,8 @@ router.post("/add", upload.single("image"), (req, res) => {
       });
     }
   });
-  // });
 });
+// });
 
 // @route         POST api/deputies/:id
 // @descrip       UPDATE : Update a deputy
