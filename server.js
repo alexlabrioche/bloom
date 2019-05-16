@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const cors = require("cors");
+const helmet = require("helmet");
 
 // Import Routes
 const deputies = require("./routes/api/deputies");
@@ -17,8 +18,12 @@ const admin = require("./routes/api/admin");
 
 const app = express();
 
-// enable Cors
+// Enable Cors to allow server and client routes to be different
 app.use(cors());
+
+// Protects the server from HTTP vulnerabilities
+app.use(helmet());
+
 // Enable Passport
 app.use(passport.initialize());
 app.use(passport.session());

@@ -19,8 +19,8 @@ router.post("/signup", (req, res) => {
   Admin.register(
     new Admin({
       username: username,
+      // Je crée un token (uid2 crypt)
       token: uid2(16)
-      // other fields can be added here
     }),
     password, // password is created and hashed
     function(err, user) {
