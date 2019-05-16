@@ -1,6 +1,6 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const passport = require("passport");
+const uid2 = require("uid2");
 
 // SuperUser Model
 const Admin = require("../../models/Admin");
@@ -18,7 +18,8 @@ router.post("/signup", (req, res) => {
 
   Admin.register(
     new Admin({
-      username: username
+      username: username,
+      token: uid2(16)
       // other fields can be added here
     }),
     password, // password is created and hashed
@@ -49,7 +50,7 @@ router.post("/login", (req, res, next) => {
     }
     res.json({
       _id: admin._id.toString(),
-      // token: user.token,
+      token: admin.token,
       username: admin.username
     });
   })(req, res, next);
