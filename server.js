@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const cors = require("cors");
 
 // Import Routes
 const deputies = require("./routes/api/deputies");
@@ -16,6 +17,8 @@ const admin = require("./routes/api/admin");
 
 const app = express();
 
+// enable Cors
+app.use(cors());
 // Enable Passport
 app.use(passport.initialize());
 app.use(passport.session());
