@@ -12,6 +12,7 @@ const router = express.Router();
 // @desc      CREATE : Create an admin
 // @access    Restricted
 router.post("/signup", (req, res) => {
+  console.log("@admin signup <<");
   const username = req.body.username;
   const password = req.body.password;
 
@@ -34,35 +35,24 @@ router.post("/signup", (req, res) => {
   );
 });
 
-router.get("/admin", function(req, res) {
-  if (req.isAuthenticated()) {
-    console.log(req.user);
-    res.render("admin");
-  } else {
-    res.redirect("/");
-  }
-});
-
-// @route     GET api/admin/login
-// @desc      Login an admin
-// @access    Restricted
-router.get("/login", function(req, res) {
-  if (req.isAuthenticated()) {
-    res.json({ msg: "You are already connected" });
-  } else {
-    res.json("login");
-  }
-});
-
 // @route     POST api/admin/login
 // @desc      Login vs dB
 // @access    Restricted
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/admin",
-    failureRedirect: "/login"
-  })
-);
+router.post("/login", (req, res, next) => {
+  console.log("@admin login <<");
+  passport.authenticate("local", { session: false }, (err, admin) => {
+    if (err) {
+      return res.json({ error: err.message });
+    }
+    if (!admin) {
+      return res.json({ error: "Username ou mot de passe incorrect" });
+    }
+    res.json({
+      _id: admin._id.toString(),
+      // token: user.token,
+      username: admin.username
+    });
+  })(req, res, next);
+});
 
 module.exports = router;
