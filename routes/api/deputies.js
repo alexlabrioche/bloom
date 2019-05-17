@@ -86,6 +86,7 @@ router.post("/add", upload.single("image"), (req, res) => {
     });
   });
 });
+// });
 
 // @route         POST api/deputies/:id
 // @descrip       UPDATE : Update a deputy
