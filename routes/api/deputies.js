@@ -2,8 +2,10 @@
 const express = require("express");
 const slug = require("slug");
 const multer = require("multer");
-const upload = multer({ dest: "public/uploads/" });
 const fs = require("fs");
+
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
 
 // Import Model Deputy
 const Deputy = require("../../models/Deputy");
@@ -48,9 +50,9 @@ router.get("/:id", (req, res) => {
 // @access        Restricted
 router.post("/add", upload.single("image"), (req, res) => {
   // On rename la photo dans le upload
-  console.log("req.file", req.file);
-  var pictureName = "public/uploads/" + req.file.filename + ".jpg";
-  console.log("public-picture", pictureName);
+  console.info("ICI");
+  console.info(req.body);
+  const pictureName = "public/uploads/" + req.file.filename + ".jpg";
   fs.rename(req.file.path, pictureName, function(err) {
     if (err) {
       console.log("il y a une erreur", err);
@@ -58,35 +60,29 @@ router.post("/add", upload.single("image"), (req, res) => {
         .status(400)
         .json({ img: "L'image n'a pas pu être sauvegardée" });
     }
-
     Deputy.findOne({ name: req.body.name }).then(deputy => {
       if (deputy) {
         return res.status(400).json({ name: "Ce député existe déjà" });
       } else {
-        Deputy.countDocuments((err, count) => {
-          console.log(`There are already ${count} deputies in the database`);
-          const newDeputy = new Deputy({
-            deputyNumber: count + 1,
-            name: req.body.name,
-            participationRate: req.body.participationRate,
-            mandateFrom: req.body.mandateFrom,
-            mandateTo: req.body.mandateTo,
-            group: req.body.group,
-            party: req.body.party,
-            picture: req.body.picture,
-            // slug: slug(req.body.name.toString()),
-            images: "/uploads/" + req.file.filename + ".jpg"
-          });
-          newDeputy
-            .save()
-            .then(user => res.json(user))
-            .catch(err => console.log("err", err));
+        console.info("ICI AUSSI");
+        const newDeputy = new Deputy({
+          name: req.body.name,
+          participationRate: req.body.participationRate,
+          mandateFrom: req.body.mandateFrom,
+          mandateTo: req.body.mandateTo,
+          group: req.body.group,
+          party: req.body.party,
+          picture: pictureName,
+          slug: slug(req.body.name.toString())
         });
+        newDeputy
+          .save()
+          .then(user => res.json(user))
+          .catch(err => console.log("err", err));
       }
     });
   });
 });
-// });
 
 // @route         POST api/deputies/:id
 // @descrip       UPDATE : Update a deputy
