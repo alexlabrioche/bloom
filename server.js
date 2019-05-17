@@ -18,6 +18,9 @@ const admin = require("./routes/api/admin");
 
 const app = express();
 
+// Give express access to the public folder
+app.use(express.static("public"));
+
 // Enable Cors to allow server and client routes to be different
 app.use(cors());
 
