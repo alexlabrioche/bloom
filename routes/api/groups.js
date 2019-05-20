@@ -61,17 +61,8 @@ router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
   console.log("data", data);
 
-  const extension = getExtension(req.file); // Voir en dessous
-  const filename = req.file.filename + extension;
-  const serverPictureName = "public/uploads/" + filename;
-  const apiPictureName = "uploads/" + filename;
-  fs.rename(req.file.path, serverPictureName, function(err) {
-    if (err) {
-      console.log("il y a une erreur", err);
-      return res
-        .status(400)
-        .json({ img: "L'image n'a pas pu être sauvegardée" });
-    }
+  if (req.file === undefined) {
+    console.log("<< undefined loop");
     Group.findOne({ name: data.name }).then(group => {
       if (group) {
         return res
@@ -81,13 +72,40 @@ router.post("/add", upload.single("image"), (req, res) => {
         const newGroup = new Group({
           name: data.name,
           description: data.description,
-          picture: apiPictureName,
           slug: slug(data.name.toString())
         });
         newGroup.save().then(group => res.json(group));
       }
     });
-  });
+  } else {
+    const extension = getExtension(req.file); // Voir en dessous
+    const filename = req.file.filename + extension;
+    const serverPictureName = "public/uploads/" + filename;
+    const apiPictureName = "uploads/" + filename;
+    fs.rename(req.file.path, serverPictureName, function(err) {
+      if (err) {
+        console.log("il y a une erreur", err);
+        return res
+          .status(400)
+          .json({ img: "L'image n'a pas pu être sauvegardée" });
+      }
+      Group.findOne({ name: data.name }).then(group => {
+        if (group) {
+          return res
+            .status(400)
+            .json({ title: "Ce groupe politique existe déjà" });
+        } else {
+          const newGroup = new Group({
+            name: data.name,
+            description: data.description,
+            picture: apiPictureName,
+            slug: slug(data.name.toString())
+          });
+          newGroup.save().then(group => res.json(group));
+        }
+      });
+    });
+  }
 });
 
 // @route   POST api/groups/:id

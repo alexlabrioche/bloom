@@ -59,17 +59,9 @@ router.get("/:id", (req, res) => {
 router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
   console.log("data", data);
-  const extension = getExtension(req.file); // Voir au dessus
-  const filename = req.file.filename + extension;
-  const serverPictureName = "public/uploads/" + filename;
-  const apiPictureName = "uploads/" + filename;
-  fs.rename(req.file.path, serverPictureName, function(err) {
-    if (err) {
-      console.log("il y a une erreur", err);
-      return res
-        .status(400)
-        .json({ img: "L'image n'a pas pu être sauvegardée" });
-    }
+  console.log("req.file", req.file);
+  if (req.file === undefined) {
+    console.log("<< undefined loop");
     Party.findOne({ name: data.name }).then(party => {
       if (party) {
         return res
@@ -79,14 +71,43 @@ router.post("/add", upload.single("image"), (req, res) => {
         const newParty = new Party({
           name: data.name,
           description: data.description,
-          picture: apiPictureName,
+
           slug: slug(data.name.toString())
         });
 
         newParty.save().then(party => res.json(party));
       }
     });
-  });
+  } else {
+    const extension = getExtension(req.file); // Voir au dessus
+    const filename = req.file.filename + extension;
+    const serverPictureName = "public/uploads/" + filename;
+    const apiPictureName = "uploads/" + filename;
+    fs.rename(req.file.path, serverPictureName, function(err) {
+      if (err) {
+        console.log("il y a une erreur", err);
+        return res
+          .status(400)
+          .json({ img: "L'image n'a pas pu être sauvegardée" });
+      }
+      Party.findOne({ name: data.name }).then(party => {
+        if (party) {
+          return res
+            .status(400)
+            .json({ title: "Ce parti politique existe déjà" });
+        } else {
+          const newParty = new Party({
+            name: data.name,
+            description: data.description,
+            picture: apiPictureName,
+            slug: slug(data.name.toString())
+          });
+
+          newParty.save().then(party => res.json(party));
+        }
+      });
+    });
+  }
 });
 
 // @route   POST api/parties/:id
