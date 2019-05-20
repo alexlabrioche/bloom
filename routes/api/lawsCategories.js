@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const multer = require("multer");
+
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
 
 // Initialize slug Module
 const slug = require("slug");
@@ -63,7 +66,7 @@ router.get("/:id", (req, res) => {
 // @route   POST api/laws-categories/add
 // @desc    Create new law category
 // @access  Private
-router.post("/add", (req, res) => {
+router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
   console.log("data", data);
   LawCategory.findOne({ name: data.name }).then(category => {
@@ -73,7 +76,6 @@ router.post("/add", (req, res) => {
       const newLawCategory = new LawCategory({
         name: data.name,
         description: data.description,
-        laws: data.laws,
         slug: slug(data.name.toString())
       });
 

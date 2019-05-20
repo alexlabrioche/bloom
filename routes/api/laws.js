@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const multer = require("multer");
 
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
 // Initialize slug Module (test with print for results)
 // const print = console.log.bind(console, ">");
 const slug = require("slug");
@@ -41,22 +43,24 @@ router.get("/:id", (req, res) => {
 // @route   POST api/laws/add
 // @desc    Create new law
 // @access  Private
-router.post("/add", (req, res) => {
+router.post("/add", upload.single("image"), (req, res) => {
+  console.log("data", req);
   const data = JSON.parse(req.body.data);
   console.log("data", data);
-  Law.findOne({ title: data.title }).then(law => {
+  Law.findOne({ name: data.name }).then(law => {
     if (law) {
       return res.status(400).json({ law: "Cette loi existe déjà" });
     } else {
       const newLaw = new Law({
-        title: data.title,
+        name: data.name,
         subTitle: data.subTitle,
         protect: data.protect,
+        category: data.category,
         commencement: data.commencement,
         resume: data.resume,
         fullText: data.fullText,
         link: data.link,
-        slug: slug(data.title.toString())
+        slug: slug(data.name.toString())
       });
 
       newLaw.save().then(law => res.json(law));

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create Law Schema
 const LawSchema = new Schema({
-  title: {
+  name: {
     type: String,
     required: true,
     index: true
@@ -13,7 +13,6 @@ const LawSchema = new Schema({
   },
   protect: {
     type: Boolean,
-    required: true,
     index: true
   },
   commencement: {
@@ -27,6 +26,10 @@ const LawSchema = new Schema({
   },
   link: {
     type: String
+  },
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "categories"
   },
   slug: {
     type: String

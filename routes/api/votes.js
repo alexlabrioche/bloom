@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const multer = require("multer");
+
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
 
 // Vote Model
 const Vote = require("../../models/Vote");
@@ -49,7 +52,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   Vote.findById(req.params.id)
     .populate("law", [
-      "title",
+      "name",
       "subTitle",
       "protect",
       "commencement",
@@ -81,7 +84,7 @@ router.get("/:id", (req, res) => {
 // @route   POST api/votes/add
 // @desc    Create new vote
 // @access  Private
-router.post("/add", (req, res) => {
+router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
   console.log("data", data);
   Vote.findOne({ decision: data.desision }).then(vote => {

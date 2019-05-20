@@ -11,12 +11,6 @@ const LawCategorySchema = new Schema({
   description: {
     type: String
   },
-  laws: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "laws"
-    }
-  ],
   slug: {
     type: String
   },

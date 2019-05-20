@@ -57,8 +57,10 @@ router.get("/:id", (req, res) => {
 // @desc    Create group
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
+  console.info(req);
   const data = JSON.parse(req.body.data);
   console.log("data", data);
+
   const extension = getExtension(req.file); // Voir en dessous
   const filename = req.file.filename + extension;
   const serverPictureName = "public/uploads/" + filename;
