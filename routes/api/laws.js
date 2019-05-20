@@ -92,12 +92,14 @@ router.delete("/:id", (req, res) => {
       .remove()
       .then(() =>
         res.json({
-          success: true
+          success: true,
+          message: "La loi a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
-          lawNotFound: "La loi avec cette ID n'a pas été trouvée"
+          error: true,
+          message: "Il n'y a pas de loi à supprimer"
         })
       );
   });

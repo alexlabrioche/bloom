@@ -51,7 +51,7 @@ router.get("/:id", (req, res) => {
 router.post("/add", upload.single("image"), (req, res) => {
   // On rename la photo dans le upload
   console.info("ICI");
-  console.info(req.body);
+  const data = JSON.parse(req.body.data);
   const pictureName = "public/uploads/" + req.file.filename + ".jpg";
   fs.rename(req.file.path, pictureName, function(err) {
     if (err) {
@@ -60,20 +60,20 @@ router.post("/add", upload.single("image"), (req, res) => {
         .status(400)
         .json({ img: "L'image n'a pas pu être sauvegardée" });
     }
-    Deputy.findOne({ name: req.body.name }).then(deputy => {
+    Deputy.findOne({ name: data.name }).then(deputy => {
       if (deputy) {
         return res.status(400).json({ name: "Ce député existe déjà" });
       } else {
         console.info("ICI AUSSI");
         const newDeputy = new Deputy({
-          name: req.body.name,
-          participationRate: req.body.participationRate,
-          mandateFrom: req.body.mandateFrom,
-          mandateTo: req.body.mandateTo,
-          group: req.body.group,
-          party: req.body.party,
+          name: data.name,
+          participationRate: data.participationRate || "",
+          mandateFrom: data.mandateFrom || "",
+          mandateTo: data.mandateTo || "",
+          group: data.group || "",
+          party: data.party || "",
           picture: pictureName,
-          slug: slug(req.body.name.toString())
+          slug: slug(data.name.toString())
         });
         newDeputy
           .save()
@@ -132,12 +132,13 @@ router.delete("/:id", (req, res) => {
       .then(() =>
         res.json({
           success: true,
-          successMessage: "Le député a été supprimé"
+          message: "Le député a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
-          deputyNotFound: "Il n'y a pas de député à supprimer"
+          error: true,
+          message: "Il n'y a pas de député à supprimer"
         })
       );
   });

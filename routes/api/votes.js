@@ -122,12 +122,14 @@ router.delete("/:id", (req, res) => {
       .remove()
       .then(() =>
         res.json({
-          success: true
+          success: true,
+          message: "Le vote a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
-          voteNotFound: "Le vote avec cette ID n'a pas été trouvée"
+          error: true,
+          message: "Il n'y a pas de vote à supprimer"
         })
       );
   });
