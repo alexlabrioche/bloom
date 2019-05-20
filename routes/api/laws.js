@@ -42,20 +42,23 @@ router.get("/:id", (req, res) => {
 // @desc    Create new law
 // @access  Private
 router.post("/add", (req, res) => {
-  Law.findOne({ title: req.body.title }).then(law => {
+  const data = JSON.parse(req.body.data);
+  console.log("data", data);
+  Law.findOne({ title: data.title }).then(law => {
     if (law) {
       return res.status(400).json({ law: "Cette loi existe déjà" });
     } else {
       const newLaw = new Law({
-        title: req.body.title,
-        subTitle: req.body.subTitle,
-        protect: req.body.protect,
-        commencement: req.body.commencement,
-        resume: req.body.resume,
-        fullText: req.body.fullText,
-        link: req.body.link,
-        slug: slug(req.body.title.toString())
+        title: data.title,
+        subTitle: data.subTitle,
+        protect: data.protect,
+        commencement: data.commencement,
+        resume: data.resume,
+        fullText: data.fullText,
+        link: data.link,
+        slug: slug(data.title.toString())
       });
+
       newLaw.save().then(law => res.json(law));
     }
   });

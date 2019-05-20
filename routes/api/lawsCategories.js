@@ -64,16 +64,19 @@ router.get("/:id", (req, res) => {
 // @desc    Create new law category
 // @access  Private
 router.post("/add", (req, res) => {
-  LawCategory.findOne({ name: req.body.name }).then(category => {
+  const data = JSON.parse(req.body.data);
+  console.log("data", data);
+  LawCategory.findOne({ name: data.name }).then(category => {
     if (category) {
       return res.status(400).json({ name: "Cette catégorie existe déjà" });
     } else {
       const newLawCategory = new LawCategory({
-        name: req.body.name,
-        description: req.body.description,
-        laws: req.body.laws,
-        slug: slug(req.body.name.toString())
+        name: data.name,
+        description: data.description,
+        laws: data.laws,
+        slug: slug(data.name.toString())
       });
+
       newLawCategory.save().then(law => res.json(law));
     }
   });

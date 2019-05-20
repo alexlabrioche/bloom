@@ -1,14 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const multer = require("multer");
+const fs = require("fs");
 
-// Initialize slug Module (test with print for results)
-// const print = console.log.bind(console, ">");
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
+
+// Initialize slug Module
 const slug = require("slug");
 slug.defaults.mode = "rfc3986";
 
 // Party Model
 const Party = require("../../models/Party");
+
+// Ici on compare check quelle est l'extension de l'image reçue
+const getExtension = file => {
+  switch (file.mimetype) {
+    case "image/png":
+      return ".png";
+    case "image/jpeg":
+      return ".jpg";
+    case "image/gif":
+      return ".gif";
+    default:
+      return ".jpg";
+  }
+};
 
 // @route   GET api/parties
 // @desc    Get all parties
@@ -39,19 +56,36 @@ router.get("/:id", (req, res) => {
 // @route   POST api/parties
 // @desc    Create party
 // @access  Private
-router.post("/", (req, res) => {
-  Party.findOne({ name: req.body.name }).then(party => {
-    if (party) {
-      return res.status(400).json({ title: "Ce parti politique existe déjà" });
-    } else {
-      const newParty = new Party({
-        name: req.body.name,
-        description: req.body.description,
-        slug: slug(req.body.name.toString())
-      });
-
-      newParty.save().then(party => res.json(party));
+router.post("/add", upload.single("image"), (req, res) => {
+  const data = JSON.parse(req.body.data);
+  console.log("data", data);
+  const extension = getExtension(req.file); // Voir au dessus
+  const filename = req.file.filename + extension;
+  const serverPictureName = "public/uploads/" + filename;
+  const apiPictureName = "uploads/" + filename;
+  fs.rename(req.file.path, serverPictureName, function(err) {
+    if (err) {
+      console.log("il y a une erreur", err);
+      return res
+        .status(400)
+        .json({ img: "L'image n'a pas pu être sauvegardée" });
     }
+    Party.findOne({ name: data.name }).then(party => {
+      if (party) {
+        return res
+          .status(400)
+          .json({ title: "Ce parti politique existe déjà" });
+      } else {
+        const newParty = new Party({
+          name: data.name,
+          description: data.description,
+          picture: apiPictureName,
+          slug: slug(data.name.toString())
+        });
+
+        newParty.save().then(party => res.json(party));
+      }
+    });
   });
 });
 

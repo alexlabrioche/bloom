@@ -1,14 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
+const multer = require("multer");
+const fs = require("fs");
 
-// Initialize slug Module (test with print for results)
-// const print = console.log.bind(console, ">");
+// Define path for uploads images
+const upload = multer({ dest: "public/uploads/" });
+
+// Initialize slug Module
 const slug = require("slug");
 slug.defaults.mode = "rfc3986";
 
 // Group Model
 const Group = require("../../models/Group");
+
+// Ici on compare check quelle est l'extension de l'image reçue
+const getExtension = file => {
+  switch (file.mimetype) {
+    case "image/png":
+      return ".png";
+    case "image/jpeg":
+      return ".jpg";
+    case "image/gif":
+      return ".gif";
+    default:
+      return ".jpg";
+  }
+};
 
 // @route   GET api/groups
 // @desc    Get all groups
@@ -36,22 +53,38 @@ router.get("/:id", (req, res) => {
     );
 });
 
-// @route   POST api/groups
+// @route   POST api/groups/add
 // @desc    Create group
 // @access  Private
-router.post("/", (req, res) => {
-  Group.findOne({ name: req.body.name }).then(group => {
-    if (group) {
-      return res.status(400).json({ title: "Ce groupe politique existe déjà" });
-    } else {
-      const newGroup = new Group({
-        name: req.body.name,
-        description: req.body.description,
-        slug: slug(req.body.name.toString())
-      });
-
-      newGroup.save().then(group => res.json(group));
+router.post("/add", upload.single("image"), (req, res) => {
+  const data = JSON.parse(req.body.data);
+  console.log("data", data);
+  const extension = getExtension(req.file); // Voir en dessous
+  const filename = req.file.filename + extension;
+  const serverPictureName = "public/uploads/" + filename;
+  const apiPictureName = "uploads/" + filename;
+  fs.rename(req.file.path, serverPictureName, function(err) {
+    if (err) {
+      console.log("il y a une erreur", err);
+      return res
+        .status(400)
+        .json({ img: "L'image n'a pas pu être sauvegardée" });
     }
+    Group.findOne({ name: data.name }).then(group => {
+      if (group) {
+        return res
+          .status(400)
+          .json({ title: "Ce groupe politique existe déjà" });
+      } else {
+        const newGroup = new Group({
+          name: data.name,
+          description: data.description,
+          picture: apiPictureName,
+          slug: slug(data.name.toString())
+        });
+        newGroup.save().then(group => res.json(group));
+      }
+    });
   });
 });
 

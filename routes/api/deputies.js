@@ -16,6 +16,20 @@ slug.defaults.mode = "rfc3986";
 // Set Router from Express
 const router = express.Router();
 
+// Ici on compare check quelle est l'extension de l'image reçue
+const getExtension = file => {
+  switch (file.mimetype) {
+    case "image/png":
+      return ".png";
+    case "image/jpeg":
+      return ".jpg";
+    case "image/gif":
+      return ".gif";
+    default:
+      return ".jpg";
+  }
+};
+
 // @route     GET api/deputies
 // @desc      READ : Display all deputies
 // @access    Public
@@ -53,6 +67,8 @@ router.post("/add", upload.single("image"), (req, res) => {
   console.info("ICI");
   console.info("req.body", req.body);
   console.info("req.file", req.file);
+  const data = JSON.parse(req.body.data);
+  console.info(data);
   const extension = getExtension(req.file); // Voir en dessous
   const filename = req.file.filename + extension;
   const serverPictureName = "public/uploads/" + filename;
@@ -73,14 +89,14 @@ router.post("/add", upload.single("image"), (req, res) => {
       } else {
         console.info("ICI AUSSI");
         const newDeputy = new Deputy({
-          name: req.body.name,
-          participationRate: req.body.participationRate,
-          mandateFrom: req.body.mandateFrom,
-          mandateTo: req.body.mandateTo,
-          group: req.body.group,
-          party: req.body.party,
+          name: data.name,
+          participationRate: data.participationRate,
+          mandateFrom: data.mandateFrom,
+          mandateTo: data.mandateTo,
+          group: data.group,
+          party: data.party,
           picture: apiPictureName,
-          slug: slug(req.body.name.toString())
+          slug: slug(data.name.toString())
         });
         newDeputy
           .save()
@@ -90,20 +106,6 @@ router.post("/add", upload.single("image"), (req, res) => {
     });
   });
 });
-
-// Ici on compare check quelle est l'extension de l'image reçue
-const getExtension = file => {
-  switch (file.mimetype) {
-    case "image/png":
-      return ".png";
-    case "image/jpeg":
-      return ".jpg";
-    case "image/gif":
-      return ".gif";
-    default:
-      return ".jpg";
-  }
-};
 
 // @route         POST api/deputies/:id
 // @descrip       UPDATE : Update a deputy

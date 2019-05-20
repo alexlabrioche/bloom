@@ -82,15 +82,18 @@ router.get("/:id", (req, res) => {
 // @desc    Create new vote
 // @access  Private
 router.post("/add", (req, res) => {
-  Vote.findOne({ decision: req.body.desision }).then(vote => {
+  const data = JSON.parse(req.body.data);
+  console.log("data", data);
+  Vote.findOne({ decision: data.desision }).then(vote => {
     if (vote) {
       return res.status(400).json({ decision: "Ce vote existe déjà" });
     } else {
       const newVote = new Vote({
-        decision: req.body.decision,
-        deputy: req.body.deputy,
-        law: req.body.law
+        decision: data.decision,
+        deputy: data.deputy,
+        law: data.law
       });
+
       newVote.save().then(vote => res.json(vote));
     }
   });
