@@ -53,6 +53,23 @@ router.get("/:id", (req, res) => {
     );
 });
 
+// @route   GET api/parties/:slug
+// @desc    Get party by slug
+// @access  Public
+router.get("/slug/:slug", (req, res) => {
+  console.log("@ get slug");
+  const toFind = {
+    slug: req.params.slug
+  };
+  Party.findOne(toFind)
+    .then(party => res.json(party))
+    .catch(err =>
+      res.status(404).json({
+        noPartyFound: "Il n'y a pas de parti politique avec ce slug"
+      })
+    );
+});
+
 // @route   POST api/parties
 // @desc    Create party
 // @access  Private
