@@ -35,7 +35,7 @@ router.get("/", (req, res) => {
     .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        noGroupsFound: "Il n'y a pas encore de groupe politique"
+        message: "Il n'y a pas encore de groupe politique"
       })
     );
 });
@@ -48,7 +48,23 @@ router.get("/:id", (req, res) => {
     .then(group => res.json(group))
     .catch(err =>
       res.status(404).json({
-        noGroupFound: "Il n'y a pas de groupe politique avec cet ID"
+        message: "Il n'y a pas de groupe politique avec cet ID"
+      })
+    );
+});
+
+// @route   GET api/groups/slug/:slug
+// @desc    Get group by slug
+// @access  Public
+router.get("/slug/:slug", (req, res) => {
+  const toFind = {
+    slug: req.params.slug
+  };
+  Group.findOne(toFind)
+    .then(group => res.json(group))
+    .catch(err =>
+      res.status(404).json({
+        message: "Il n'y a pas de groupe politique avec cette référence"
       })
     );
 });
@@ -67,11 +83,11 @@ router.post("/add", upload.single("image"), (req, res) => {
       if (group) {
         return res
           .status(400)
-          .json({ title: "Ce groupe politique existe déjà" });
+          .json({ message: "Ce groupe politique existe déjà" });
       } else {
         const newGroup = new Group({
           name: data.name,
-          description: data.description,
+          description: data.description || "",
           slug: slug(data.name.toString())
         });
         newGroup.save().then(group => res.json(group));
@@ -93,12 +109,12 @@ router.post("/add", upload.single("image"), (req, res) => {
         if (group) {
           return res
             .status(400)
-            .json({ title: "Ce groupe politique existe déjà" });
+            .json({ message: "Ce groupe politique existe déjà" });
         } else {
           const newGroup = new Group({
             name: data.name,
-            description: data.description,
-            picture: apiPictureName,
+            description: data.description || "",
+            picture: apiPictureName || "",
             slug: slug(data.name.toString())
           });
           newGroup.save().then(group => res.json(group));

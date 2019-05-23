@@ -22,7 +22,7 @@ router.get("/", (req, res) => {
     })
     .catch(err =>
       res.status(404).json({
-        law: "Il n'y a pas encore de loi"
+        message: "Il n'y a pas encore de loi"
       })
     );
 });
@@ -35,7 +35,23 @@ router.get("/:id", (req, res) => {
     .then(law => res.json(law))
     .catch(err =>
       res.status(404).json({
-        noLawFound: "Il n'y a pas de loi avec cet ID"
+        message: "Il n'y a pas de loi avec cet ID"
+      })
+    );
+});
+
+// @route   GET api/laws/slug/:slug
+// @desc    Get law by slug
+// @access  Public
+router.get("/slug/:slug", (req, res) => {
+  const toFind = {
+    slug: req.params.slug
+  };
+  Law.findOne(toFind)
+    .then(law => res.json(law))
+    .catch(err =>
+      res.status(404).json({
+        message: "Il n'y a pas de loi avec cette référence"
       })
     );
 });
@@ -49,17 +65,17 @@ router.post("/add", upload.single("image"), (req, res) => {
   console.log("data", data);
   Law.findOne({ name: data.name }).then(law => {
     if (law) {
-      return res.status(400).json({ law: "Cette loi existe déjà" });
+      return res.status(400).json({ message: "Cette loi existe déjà" });
     } else {
       const newLaw = new Law({
         name: data.name,
-        subTitle: data.subTitle,
-        protect: data.protect,
-        category: data.category,
-        commencement: data.commencement,
-        resume: data.resume,
-        fullText: data.fullText,
-        link: data.link,
+        subTitle: data.subTitle || "",
+        protect: data.protect || "",
+        category: data.category || "",
+        commencement: data.commencement || "",
+        resume: data.resume || "",
+        fullText: data.fullText || "",
+        link: data.link || "",
         slug: slug(data.name.toString())
       });
 

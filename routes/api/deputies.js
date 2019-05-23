@@ -44,6 +44,22 @@ router.get("/", (req, res) => {
     });
 });
 
+// @route   GET api/deputies/slug/:slug
+// @desc    Get deputy by slug
+// @access  Public
+router.get("/slug/:slug", (req, res) => {
+  const toFind = {
+    slug: req.params.slug
+  };
+  Deputy.findOne(toFind)
+    .then(deputy => res.json(deputy))
+    .catch(err =>
+      res.status(404).json({
+        message: "Il n'y a pas de député avec cette référence"
+      })
+    );
+});
+
 // @route     GET api/deputies/:id
 // @desc      READ : Display 1 deputiy
 // @access    Public
@@ -53,9 +69,7 @@ router.get("/:id", (req, res) => {
     .populate("party", ["name", "description", "picture", "slug", "created"])
     .then(deputy => res.json(deputy))
     .catch(err =>
-      res
-        .status(400)
-        .json({ noDeputyFound: "Il n'y a pas de député avec cet ID" })
+      res.status(400).json({ message: "Il n'y a pas de député avec cet ID" })
     );
 });
 
@@ -64,18 +78,12 @@ router.get("/:id", (req, res) => {
 // @access        Restricted
 router.post("/add", upload.single("image"), (req, res) => {
   // On rename la photo dans le upload
-  console.info("ICI");
-  console.info("req.body", req.body);
-  console.info("req.file", req.file);
   const data = JSON.parse(req.body.data);
   console.info(data);
   const extension = getExtension(req.file); // Voir en dessous
   const filename = req.file.filename + extension;
   const serverPictureName = "public/uploads/" + filename;
   const apiPictureName = "uploads/" + filename;
-  console.log("filename", filename);
-  console.log("serverPictureName", serverPictureName);
-  console.log("apiPictureName", apiPictureName);
   fs.rename(req.file.path, serverPictureName, function(err) {
     if (err) {
       console.log("il y a une erreur", err);
@@ -87,15 +95,14 @@ router.post("/add", upload.single("image"), (req, res) => {
       if (deputy) {
         return res.status(400).json({ name: "Ce député existe déjà" });
       } else {
-        console.info("ICI AUSSI");
         const newDeputy = new Deputy({
           name: data.name,
-          participationRate: data.participationRate,
-          mandateFrom: data.mandateFrom,
-          mandateTo: data.mandateTo,
-          group: data.group,
-          party: data.party,
-          picture: apiPictureName,
+          participationRate: data.participationRate || "",
+          mandateFrom: data.mandateFrom || "",
+          mandateTo: data.mandateTo || "",
+          group: data.group || "",
+          party: data.party || "",
+          picture: apiPictureName || "",
           slug: slug(data.name.toString())
         });
         newDeputy

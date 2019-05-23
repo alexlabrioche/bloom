@@ -14,7 +14,7 @@ const Vote = require("../../models/Vote");
 router.get("/", (req, res) => {
   Vote.find()
     .populate("law", [
-      "title",
+      "name",
       "subTitle",
       "protect",
       "commencement",
@@ -40,7 +40,7 @@ router.get("/", (req, res) => {
     })
     .catch(err =>
       res.status(404).json({
-        noVotesFound: "Il n'y a pas enocre de votes",
+        message: "Il n'y a pas enocre de votes",
         error: err
       })
     );
@@ -76,7 +76,7 @@ router.get("/:id", (req, res) => {
     .then(vote => res.json(vote))
     .catch(err =>
       res.status(404).json({
-        noVoteFound: "Il n'y a pas de vote avec cet ID"
+        message: "Il n'y a pas de vote avec cet ID"
       })
     );
 });
@@ -89,7 +89,7 @@ router.post("/add", upload.single("image"), (req, res) => {
   console.log("data", data);
   Vote.findOne({ decision: data.desision }).then(vote => {
     if (vote) {
-      return res.status(400).json({ decision: "Ce vote existe déjà" });
+      return res.status(400).json({ message: "Ce vote existe déjà" });
     } else {
       const newVote = new Vote({
         decision: data.decision,

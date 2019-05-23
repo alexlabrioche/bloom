@@ -35,7 +35,7 @@ router.get("/", (req, res) => {
     .then(party => res.json(party))
     .catch(err =>
       res.status(404).json({
-        noPartiesFound: "Il n'y a pas encore de parti politique"
+        message: "Il n'y a pas encore de parti politique"
       })
     );
 });
@@ -48,16 +48,15 @@ router.get("/:id", (req, res) => {
     .then(party => res.json(party))
     .catch(err =>
       res.status(404).json({
-        noPartyFound: "Il n'y a pas de parti politique avec cet ID"
+        message: "Il n'y a pas de parti politique avec cet ID"
       })
     );
 });
 
-// @route   GET api/parties/:slug
+// @route   GET api/parties/slug/:slug
 // @desc    Get party by slug
 // @access  Public
 router.get("/slug/:slug", (req, res) => {
-  console.log("@ get slug");
   const toFind = {
     slug: req.params.slug
   };
@@ -65,12 +64,12 @@ router.get("/slug/:slug", (req, res) => {
     .then(party => res.json(party))
     .catch(err =>
       res.status(404).json({
-        noPartyFound: "Il n'y a pas de parti politique avec ce slug"
+        message: "Il n'y a pas de parti politique avec cette référence"
       })
     );
 });
 
-// @route   POST api/parties
+// @route   POST api/parties/add
 // @desc    Create party
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
@@ -83,11 +82,11 @@ router.post("/add", upload.single("image"), (req, res) => {
       if (party) {
         return res
           .status(400)
-          .json({ title: "Ce parti politique existe déjà" });
+          .json({ message: "Ce parti politique existe déjà" });
       } else {
         const newParty = new Party({
           name: data.name,
-          description: data.description,
+          description: data.description || "",
 
           slug: slug(data.name.toString())
         });
@@ -111,12 +110,12 @@ router.post("/add", upload.single("image"), (req, res) => {
         if (party) {
           return res
             .status(400)
-            .json({ title: "Ce parti politique existe déjà" });
+            .json({ message: "Ce parti politique existe déjà" });
         } else {
           const newParty = new Party({
             name: data.name,
-            description: data.description,
-            picture: apiPictureName,
+            description: data.description || "",
+            picture: apiPictureName || "",
             slug: slug(data.name.toString())
           });
 

@@ -45,7 +45,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   LawCategory.findById(req.params.id)
     .populate("laws", [
-      "title",
+      "name",
       "subTitle",
       "protect",
       "commencement",
@@ -59,6 +59,22 @@ router.get("/:id", (req, res) => {
     .catch(err =>
       res.status(404).json({
         noCategoryFound: "Il n'y a pas de catégorie de loi avec cet ID"
+      })
+    );
+});
+
+// @route   GET api/laws-categories/slug/:slug
+// @desc    Get law category by slug
+// @access  Public
+router.get("/slug/:slug", (req, res) => {
+  const toFind = {
+    slug: req.params.slug
+  };
+  LawCategory.findOne(toFind)
+    .then(category => res.json(category))
+    .catch(err =>
+      res.status(404).json({
+        message: "Il n'y a pas de catégorie avec cette référence"
       })
     );
 });
@@ -112,13 +128,13 @@ router.delete("/:id", (req, res) => {
       .then(() =>
         res.json({
           success: true,
-          message: "La catégorie a été supprimé"
+          message: "Le Texte a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
           error: true,
-          message: "Il n'y a pas de catégorie à supprimer"
+          message: "Il n'y a pas de Texte à supprimer"
         })
       );
   });
