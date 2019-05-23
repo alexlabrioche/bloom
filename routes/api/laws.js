@@ -116,13 +116,13 @@ router.delete("/:id", (req, res) => {
       .then(() =>
         res.json({
           success: true,
-          message: "La loi a été supprimé"
+          message: "L'amendement a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
           error: true,
-          message: "Il n'y a pas de loi à supprimer"
+          message: "Il n'y a pas d'amendement à supprimer"
         })
       );
   });

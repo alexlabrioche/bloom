@@ -52,6 +52,8 @@ router.get("/slug/:slug", (req, res) => {
     slug: req.params.slug
   };
   Deputy.findOne(toFind)
+    .populate("group", ["name", "description", "picture", "slug", "created"])
+    .populate("party", ["name", "description", "picture", "slug", "created"])
     .then(deputy => res.json(deputy))
     .catch(err =>
       res.status(404).json({

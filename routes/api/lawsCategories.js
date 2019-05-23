@@ -71,6 +71,17 @@ router.get("/slug/:slug", (req, res) => {
     slug: req.params.slug
   };
   LawCategory.findOne(toFind)
+    .populate("laws", [
+      "name",
+      "subTitle",
+      "protect",
+      "commencement",
+      "resume",
+      "fullText",
+      "link",
+      "slug",
+      "created"
+    ])
     .then(category => res.json(category))
     .catch(err =>
       res.status(404).json({
