@@ -74,10 +74,10 @@ router.get("/slug/:slug", (req, res) => {
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
-  console.log("data", data);
+  // console.log("data", data);
   console.log("req.file", req.file);
   if (req.file === undefined) {
-    console.log("<< undefined loop");
+    // console.log("<< undefined loop");
     Party.findOne({ name: data.name }).then(party => {
       if (party) {
         return res
@@ -101,7 +101,7 @@ router.post("/add", upload.single("image"), (req, res) => {
     const apiPictureName = "uploads/" + filename;
     fs.rename(req.file.path, serverPictureName, function(err) {
       if (err) {
-        console.log("il y a une erreur", err);
+        // console.log("il y a une erreur", err);
         return res
           .status(400)
           .json({ img: "L'image n'a pas pu être sauvegardée" });
@@ -148,6 +148,7 @@ router.post("/:id", (req, res) => {
 // @desc    Delete party
 // @access  Private
 router.delete("/:id", (req, res) => {
+  // console.log("@delete - server");
   Party.findById(req.params.id).then(party => {
     party
       .remove()

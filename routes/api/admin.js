@@ -12,7 +12,7 @@ const router = express.Router();
 // @desc      CREATE : Create an admin
 // @access    Restricted
 router.post("/signup", (req, res) => {
-  console.log("@admin signup <<");
+  // console.log("@admin signup <<");
   const username = req.body.username;
   const password = req.body.password;
 
@@ -25,7 +25,7 @@ router.post("/signup", (req, res) => {
     password, // password is created and hashed
     function(err, user) {
       if (err) {
-        console.log("/signup user register err", err);
+        // console.log("/signup user register err", err);
         return res.render("register");
       } else {
         passport.authenticate("local")(req, res, function() {
@@ -40,7 +40,7 @@ router.post("/signup", (req, res) => {
 // @desc      Login vs dB
 // @access    Restricted
 router.post("/login", (req, res, next) => {
-  console.log("@admin login <<");
+  // console.log("@admin login <<");
   passport.authenticate("local", { session: false }, (err, admin) => {
     if (err) {
       return res.json({ error: err.message });

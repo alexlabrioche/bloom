@@ -81,7 +81,7 @@ router.get("/:id", (req, res) => {
 router.post("/add", upload.single("image"), (req, res) => {
   // On rename la photo dans le upload
   const data = JSON.parse(req.body.data);
-  console.info(data);
+  // console.info(data);
   const extension = getExtension(req.file); // Voir en dessous
   const filename = req.file.filename + extension;
   const serverPictureName = "public/uploads/" + filename;

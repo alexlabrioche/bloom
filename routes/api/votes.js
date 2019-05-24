@@ -86,7 +86,7 @@ router.get("/:id", (req, res) => {
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
-  console.log("data", data);
+  // console.log("data", data);
   Vote.findOne({ decision: data.desision }).then(vote => {
     if (vote) {
       return res.status(400).json({ message: "Ce vote existe déjà" });

@@ -11,6 +11,7 @@ slug.defaults.mode = "rfc3986";
 
 // Group Model
 const Law = require("../../models/Law");
+const Vote = require("../../models/Vote");
 
 // @route   GET api/laws/
 // @desc    Get all laws
@@ -60,9 +61,9 @@ router.get("/slug/:slug", (req, res) => {
 // @desc    Create new law
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
-  console.log("data", req);
+  // console.log("data", req);
   const data = JSON.parse(req.body.data);
-  console.log("data", data);
+  // console.log("data", data);
   Law.findOne({ name: data.name }).then(law => {
     if (law) {
       return res.status(400).json({ message: "Cette loi existe déjà" });
@@ -110,7 +111,24 @@ router.post("/:id", (req, res) => {
 // @desc    Delete a law
 // @access  Private
 router.delete("/:id", (req, res) => {
-  Law.findById(req.params.id).then(law => {
+  const id = req.params.id;
+  Law.findById(id).then(law => {
+    Vote.find({ law: { _id: id } })
+      .remove()
+      .then(() =>
+        res.json({
+          success: true,
+          message: "Tous les votes liés à l'amendement ont été supprimés"
+        })
+      )
+      .catch(err =>
+        res.status(404).json({
+          error: true,
+          message:
+            "Il y a eu un problème lors de la suppression des votes liés à l'amendement"
+        })
+      );
+    console.log("@laws, all votes ?");
     law
       .remove()
       .then(() =>

@@ -95,7 +95,7 @@ router.get("/slug/:slug", (req, res) => {
 // @access  Private
 router.post("/add", upload.single("image"), (req, res) => {
   const data = JSON.parse(req.body.data);
-  console.log("data", data);
+  // console.log("data", data);
   LawCategory.findOne({ name: data.name }).then(category => {
     if (category) {
       return res.status(400).json({ name: "Cette catégorie existe déjà" });
