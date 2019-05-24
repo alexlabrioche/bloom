@@ -114,33 +114,28 @@ router.delete("/:id", (req, res) => {
   const id = req.params.id;
   Law.findById(id).then(law => {
     Vote.find({ law: { _id: id } })
-      .remove()
-      .then(() =>
-        res.json({
-          success: true,
-          message: "Tous les votes liés à l'amendement ont été supprimés"
-        })
-      )
+      .deleteMany()
+      .then(() => {
+        law
+          .remove()
+          .then(() =>
+            res.json({
+              success: true,
+              message: "L'amendement et tous les votes liés ont été supprimés"
+            })
+          )
+          .catch(err =>
+            res.status(404).json({
+              error: true,
+              message: "Il n'y a pas d'amendement à supprimer"
+            })
+          );
+      })
       .catch(err =>
         res.status(404).json({
           error: true,
           message:
             "Il y a eu un problème lors de la suppression des votes liés à l'amendement"
-        })
-      );
-    console.log("@laws, all votes ?");
-    law
-      .remove()
-      .then(() =>
-        res.json({
-          success: true,
-          message: "L'amendement a été supprimé"
-        })
-      )
-      .catch(err =>
-        res.status(404).json({
-          error: true,
-          message: "Il n'y a pas d'amendement à supprimer"
         })
       );
   });

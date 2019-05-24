@@ -147,7 +147,7 @@ router.post("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   Group.findById(req.params.id).then(group => {
     group
-      .remove()
+      .deleteOne()
       .then(() =>
         res.json({
           success: true,

@@ -135,17 +135,17 @@ router.post("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   LawCategory.findById(req.params.id).then(law => {
     law
-      .remove()
+      .deleteOne()
       .then(() =>
         res.json({
           success: true,
-          message: "Le Texte a été supprimé"
+          message: "Le texte a été supprimé"
         })
       )
       .catch(err =>
         res.status(404).json({
           error: true,
-          message: "Il n'y a pas de Texte à supprimer"
+          message: "Il n'y a pas de texte à supprimer"
         })
       );
   });

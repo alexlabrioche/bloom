@@ -9,6 +9,7 @@ const upload = multer({ dest: "public/uploads/" });
 
 // Import Model Deputy
 const Deputy = require("../../models/Deputy");
+const Vote = require("../../models/Vote");
 
 // Configure slug to default url
 slug.defaults.mode = "rfc3986";
@@ -159,18 +160,28 @@ router.post("/:id", (req, res) => {
 // @access        Restricted
 router.delete("/:id", (req, res) => {
   Deputy.findById(req.params.id).then(deputy => {
-    deputy
-      .remove()
-      .then(() =>
-        res.json({
-          success: true,
-          message: "Le député a été supprimé"
-        })
-      )
+    Vote.find({ deputy: { _id: req.params.id } })
+      .deleteMany()
+      .then(() => {
+        deputy
+          .remove()
+          .then(() =>
+            res.json({
+              success: true,
+              message: "Le député et ses votes ont été supprimés"
+            })
+          )
+          .catch(err =>
+            res.status(404).json({
+              error: true,
+              message: "Il n'y a pas de député à supprimer"
+            })
+          );
+      })
       .catch(err =>
         res.status(404).json({
           error: true,
-          message: "Il n'y a pas de député à supprimer"
+          message: "Il y a eu un problème lors de la suppression de ce député"
         })
       );
   });

@@ -151,7 +151,7 @@ router.delete("/:id", (req, res) => {
   // console.log("@delete - server");
   Party.findById(req.params.id).then(party => {
     party
-      .remove()
+      .deleteOne()
       .then(() =>
         res.json({
           success: true,

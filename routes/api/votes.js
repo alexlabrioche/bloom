@@ -125,7 +125,7 @@ router.post("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   Vote.findById(req.params.id).then(vote => {
     vote
-      .remove()
+      .deleteOne()
       .then(() =>
         res.json({
           success: true,
