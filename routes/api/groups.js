@@ -124,10 +124,10 @@ router.post("/add", upload.single("image"), (req, res) => {
   }
 });
 
-// @route   POST api/groups/:id
+// @route   PUT api/groups/:id
 // @desc    Update group
 // @access  Private
-router.post("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   Group.findById(req.params.id).then(group => {
     const groupFields = {};
     if (req.body.name) groupFields.name = req.body.name;

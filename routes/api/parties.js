@@ -126,10 +126,10 @@ router.post("/add", upload.single("image"), (req, res) => {
   }
 });
 
-// @route   POST api/parties/:id
+// @route   PUT api/parties/:id
 // @desc    Update party
 // @access  Private
-router.post("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   Party.findById(req.params.id).then(party => {
     const partyFields = {};
 

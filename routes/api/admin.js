@@ -46,7 +46,7 @@ router.post("/login", (req, res, next) => {
       return res.json({ error: err.message });
     }
     if (!admin) {
-      return res.json({ error: "Username ou mot de passe incorrect" });
+      return res.json({ error: "Username ou password incorrect" });
     }
     res.json({
       _id: admin._id.toString(),

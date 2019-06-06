@@ -111,10 +111,10 @@ router.post("/add", upload.single("image"), (req, res) => {
   });
 });
 
-// @route   POST api/laws-categories/:id
+// @route   PUT api/laws-categories/:id
 // @desc    Update a law category
 // @access  Private
-router.post("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   LawCategory.findById(req.params.id).then(law => {
     const lawFields = {};
     if (req.body.name) lawFields.name = req.body.name;

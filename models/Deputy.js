@@ -7,9 +7,6 @@ const DeputySchema = new Schema({
     type: String,
     index: true
   },
-  participationRate: {
-    type: Number
-  },
   mandateFrom: {
     type: Date
   },
@@ -23,6 +20,9 @@ const DeputySchema = new Schema({
   party: {
     type: Schema.Types.ObjectId,
     ref: "parties"
+  },
+  twitter: {
+    type: String
   },
   picture: {
     type: String

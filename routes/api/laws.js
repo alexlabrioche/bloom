@@ -85,10 +85,10 @@ router.post("/add", upload.single("image"), (req, res) => {
   });
 });
 
-// @route   POST api/laws/:id
+// @route   PUT api/laws/:id
 // @desc    Update a law
 // @access  Private
-router.post("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   Law.findById(req.params.id).then(law => {
     const lawFields = {};
     if (req.body.title) lawFields.title = req.body.title;

@@ -102,10 +102,10 @@ router.post("/add", upload.single("image"), (req, res) => {
   });
 });
 
-// @route   POST api/votes/:id
+// @route   PUT api/votes/:id
 // @desc    Update a vote
 // @access  Private
-router.post("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   Vote.findById(req.params.id).then(vote => {
     const voteFields = {};
     if (req.body.decision) voteFields.decision = req.body.decision;
